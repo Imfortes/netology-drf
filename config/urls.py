@@ -21,9 +21,9 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/smart-home', include('smart_home.urls')),
-    path('api/v1/logistic', include('logistic.urls')),
-    path('api/v1/advertisements', include('advertisements.urls')),
+    path('api/v1/smart-home/', include('smart_home.urls')),
+    path('api/v1/logistic/', include('logistic.urls')),
+    path('api/v1/advertisements/', include('advertisements.urls')),
 ]
 
 
