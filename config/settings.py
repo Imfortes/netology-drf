@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
     'smart_home',
     'logistic',
+    'advertisements'
 ]
 
 MIDDLEWARE = [
@@ -57,6 +58,16 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'user': '20/minute',
+        'anon': '10/minute',
+    }
+}
 
 ROOT_URLCONF = 'config.urls'
 
