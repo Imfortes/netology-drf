@@ -14,11 +14,21 @@ from .permissions import IsOwnerOrReadOnly, IsNotDraftForOthers
 
 
 class AdvertisementViewSet(viewsets.ModelViewSet):
+    """ViewSet для объявлений."""
+
     queryset = Advertisement.objects.all()
     serializer_class = AdvertisementSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = AdvertisementFilter
     throttle_classes = [UserRateThrottle, AnonRateThrottle]
+
+    def list(self, request, *args, **kwargs):
+        """Получение списка объявлений."""
+        print("List view called with request data:", request.data)
+        # Вызываем базовый метод list
+        return super().list(request, *args, **kwargs)
+
+    def get_queryset(self):
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
@@ -36,6 +46,18 @@ class AdvertisementViewSet(viewsets.ModelViewSet):
             raise serializers.ValidationError("Нельзя иметь больше 10 открытых объявлений")
 
         serializer.save(creator=self.request.user)
+
+    def perform_update(self, serializer):
+        advertisement = serializer.instance
+        if advertisement.creator != self.request.user:
+            raise PermissionError("You do not have permission to perform this action.")
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        if instance.creator != self.request.user:
+            raise PermissionError("You do not have permission to perform this action.")
+
+        instance.delete()
 
     # Для дополнительного задания (избранное)
     @action(detail=True, methods=['post'])
